@@ -192,7 +192,7 @@ class Elipse extends Circle{
 	
 	 @Override
 		public boolean isInside(float px, float py) {
-			return (Math.sqrt((px/r) + (py/r2)) <= 1);
+			return (((x-px)*(x-px))/(r*r) + ((y-py)*(y-py))/(r2*r2) <= 1);
 		}
 	 
 	 @Override
@@ -217,6 +217,162 @@ class Elipse extends Circle{
 
 }
 
+class Plus extends Figure{
+	Point p1, p2, p3, p11, p21, p31, p12, p22, p32, p13, p23, p33;
+	int length;
+	int width;
+	
+	Plus(){
+		p1 = new Point();
+		p2 = new Point();
+		p3 = new Point();
+		p11 = new Point();
+		p21 = new Point();
+		p31 = new Point();
+		p12 = new Point();
+		p22 = new Point();
+		p32 = new Point();
+		p13 = new Point();
+		p23 = new Point();
+		p33 = new Point();
+		
+		length = random.nextInt(100);
+		width = length/4;
+		
+		p2.x = p1.x;
+		p2.y = p1.y+length;
+		p3.x = p1.x-length;
+		p3.y = p1.y+length;
+		p11.x = p1.x+width;
+		p11.y = p1.y;
+		p21.x = p11.x;
+		p21.y = p11.y+length;
+		p31.x = p11.x+length;
+		p31.y = p11.y+length;
+		p12.x = p3.x;
+		p12.y = p3.y+width;
+		p22.x = p12.x+length;
+		p22.y = p12.y;
+		p32.x = p22.x;
+		p32.y = p22.y+length;
+		p33.x = p32.x+width;
+		p33.y = p32.y;
+		p23.x = p33.x;
+		p23.y = p33.y-length;
+		p13.x = p23.x+length;
+		p13.y = p23.y;
+	}
+
+	@Override
+	public boolean isInside(float px, float py) {
+		if(px>=p1.x && px<=p11.x)
+			if(py>=p1.y && py<=p32.y)
+				return true;
+		if(px>=p3.x && px<= p31.x)
+			if(py>=p3.y && py<=p12.y)
+				return true;
+		return false;
+	}
+
+	@Override
+	String getName() {
+		return "Plus(" + p1.toStringXY() + ", " + p2.toStringXY() + ")";
+	}
+
+	@Override
+	float computeArea() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	float computePerimeter() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	void move(float dx, float dy) {
+		p1.move(dx,dy);
+		p2.move(dx,dy);
+		p3.move(dx,dy);
+		p11.move(dx,dy);
+		p12.move(dx,dy);
+		p13.move(dx,dy);
+		p21.move(dx,dy);
+		p22.move(dx,dy);
+		p23.move(dx,dy);
+		p31.move(dx,dy);
+		p32.move(dx,dy);
+		p33.move(dx,dy);
+		
+	}
+
+	@Override
+	void scale(float s) {
+		Point sr1 = new Point((p1.x+p2.x+p3.x+p11.x+p12.x+p13.x+p21.x+p22.x+p23.x+p31.x+p32.x+p33.x)/12,
+                (p1.y+p2.y+p3.y+p11.y+p12.y+p13.y+p21.y+p22.y+p23.y+p31.y+p32.y+p33.y)/12);
+		p1.x*=s; p1.y*=s;
+		p2.x*=s; p2.y*=s;
+		p3.x*=s; p3.y*=s;
+		p11.x*=s; p11.y*=s;
+		p12.x*=s; p12.y*=s;
+		p13.x*=s; p13.y*=s;
+		p21.x*=s; p21.y*=s;
+		p22.x*=s; p22.y*=s;
+		p23.x*=s; p23.y*=s;
+		p31.x*=s; p31.y*=s;
+		p32.x*=s; p32.y*=s;
+		p33.x*=s; p33.y*=s;
+		Point sr2 = new Point((p1.x+p2.x+p3.x+p11.x+p12.x+p13.x+p21.x+p22.x+p23.x+p31.x+p32.x+p33.x)/12,
+                (p1.y+p2.y+p3.y+p11.y+p12.y+p13.y+p21.y+p22.y+p23.y+p31.y+p32.y+p33.y)/12);
+		float dx=sr1.x-sr2.x;
+		float dy=sr1.y-sr2.y;
+		p1.move(dx,dy);
+		p2.move(dx,dy);
+		p3.move(dx,dy);
+		p11.move(dx,dy);
+		p12.move(dx,dy);
+		p13.move(dx,dy);
+		p21.move(dx,dy);
+		p22.move(dx,dy);
+		p23.move(dx,dy);
+		p31.move(dx,dy);
+		p32.move(dx,dy);
+		p33.move(dx,dy);
+	}
+
+	@Override
+	void draw(Graphics g) {
+		setColor(g);
+		g.drawLine((int)p1.x, (int)p1.y, (int)p2.x, (int)p2.y);
+		g.drawLine((int)p2.x, (int)p2.y, (int)p3.x, (int)p3.y);
+		g.drawLine((int)p1.x, (int)p1.y, (int)p11.x, (int)p11.y);
+		g.drawLine((int)p11.x, (int)p11.y, (int)p21.x, (int)p21.y);
+		g.drawLine((int)p21.x, (int)p21.y, (int)p31.x, (int)p31.y);
+		g.drawLine((int)p3.x, (int)p3.y, (int)p12.x, (int)p12.y);
+		g.drawLine((int)p12.x, (int)p12.y, (int)p22.x, (int)p22.y);
+		g.drawLine((int)p22.x, (int)p22.y, (int)p32.x, (int)p32.y);
+		g.drawLine((int)p32.x, (int)p32.y, (int)p33.x, (int)p33.y);
+		g.drawLine((int)p33.x, (int)p33.y, (int)p23.x, (int)p23.y);
+		g.drawLine((int)p23.x, (int)p23.y, (int)p13.x, (int)p13.y);
+		g.drawLine((int)p13.x, (int)p13.y, (int)p31.x, (int)p31.y);
+		
+	}
+
+	@Override
+	float getX() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	float getY() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+}
 
 class Triangle extends Figure{
     Point point1, point2, point3;
@@ -427,6 +583,12 @@ class Picture extends JPanel implements KeyListener, MouseListener {
 		case 't':
 			addFigure(new Triangle());
 			break;
+		case 'e' :
+			addFigure(new Elipse());
+			break;
+		case 'l' :
+			addFigure(new Plus());
+			break;
 
 		case '+':
 			scaleAllFigures(1.1f);
@@ -489,6 +651,7 @@ public class GraphicEditor extends JFrame implements ActionListener{
 			+ "   p  ==> dodanie nowego punktu\n"
 			+ "   c  ==> dodanie nowego kola\n"
 			+ "   t  ==> dodanie nowego trojkata\n"
+			+ "	  e  ==> dodanie nowej elipsy\n"	
 			+ "\nOperacje myszka:\n" + "   klik ==> zaznaczanie figur\n"
 			+ "   ALT + klik ==> zmiana zaznaczenia figur\n"
 			+ "   przeciaganie ==> przesuwanie figur";
@@ -497,7 +660,8 @@ public class GraphicEditor extends JFrame implements ActionListener{
 	protected Picture picture;
 
 	private JMenu[] menu = { new JMenu("Figury"),
-			                 new JMenu("Edytuj")};
+			                 new JMenu("Edytuj"),
+			                 new JMenu("Pomoc")};
 
 	private JMenuItem[] items = { new JMenuItem("Punkt"),
 			                      new JMenuItem("Kolo"),
@@ -508,12 +672,14 @@ public class GraphicEditor extends JFrame implements ActionListener{
 			                      new JMenuItem("Przesun w dol"),
 			                      new JMenuItem("Powieksz"),
 			                      new JMenuItem("Pomniejsz"),
+			                      new JMenuItem("Skroty klawisowe")
 			                      };
 
 	private JButton buttonPoint = new JButton("Punkt");
 	private JButton buttonCircle = new JButton("Kolo");
 	private JButton buttonTriangle = new JButton("Trojkat");
 	private JButton buttonElipse = new JButton("Elipsa");
+	private JButton buttonPlus = new JButton("Plus");
 
 
     public GraphicEditor()
@@ -538,6 +704,8 @@ public class GraphicEditor extends JFrame implements ActionListener{
       menu[1].addSeparator();
       menu[1].add(items[7]);
       menu[1].add(items[8]);
+      
+      menu[2].add(items[9]);
 
       // dodanie do okna paska menu
       JMenuBar menubar = new JMenuBar();
@@ -555,11 +723,13 @@ public class GraphicEditor extends JFrame implements ActionListener{
       buttonCircle.addActionListener(this);
       buttonTriangle.addActionListener(this);
       buttonElipse.addActionListener(this);
+      buttonPlus.addActionListener(this);
 
       picture.add(buttonPoint);
       picture.add(buttonCircle);
       picture.add(buttonTriangle);
       picture.add(buttonElipse);
+      picture.add(buttonPlus);
 
       setContentPane(picture);
       setVisible(true);
@@ -576,6 +746,8 @@ public class GraphicEditor extends JFrame implements ActionListener{
 			picture.addFigure(new Triangle());
 		if (zrodlo == buttonElipse)
 			picture.addFigure(new Elipse());
+		if (zrodlo == buttonPlus)
+			picture.addFigure(new Plus());
 
 		if (zrodlo == items[0])
 			picture.addFigure(new Point());
@@ -596,6 +768,8 @@ public class GraphicEditor extends JFrame implements ActionListener{
 			picture.scaleAllFigures(1.1f);
 		if (zrodlo == items[8])
 			picture.scaleAllFigures(0.9f);
+		if (zrodlo == items[9])
+			JOptionPane.showMessageDialog(null, DESCRIPTION);
 
 		picture.requestFocus(); // przywrocenie ogniskowania w celu przywrocenia
 								// obslugi zadarzen od klawiatury
