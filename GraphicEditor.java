@@ -237,7 +237,7 @@ class Plus extends Figure{
 		p33 = new Point();
 		
 		length = random.nextInt(100);
-		width = length/4;
+		width = random.nextInt(15)+10;
 		
 		p2.x = p1.x;
 		p2.y = p1.y+length;
@@ -281,14 +281,23 @@ class Plus extends Figure{
 
 	@Override
 	float computeArea() {
-		// TODO Auto-generated method stub
-		return 0;
+		float a = (float)Math.sqrt( (p1.x-p2.x)*(p1.x-p2.x)+
+                (p1.y-p2.y)*(p1.y-p2.y));
+		float b = (float)Math.sqrt( (p1.x-p11.x)*(p1.x-p11.x)+
+                (p1.y-p11.y)*(p1.y-p11.y));
+		float c = (float)Math.sqrt( (p3.x-p31.x)*(p3.x-p31.x)+
+                (p3.y-p31.y)*(p3.y-p31.y));
+		return c*b+2*(a*b);
 	}
 
 	@Override
 	float computePerimeter() {
-		// TODO Auto-generated method stub
-		return 0;
+		 float a = (float)Math.sqrt( (p1.x-p2.x)*(p1.x-p2.x)+
+                 (p1.y-p2.y)*(p1.y-p2.y));
+		 float b = (float)Math.sqrt( (p1.x-p11.x)*(p1.x-p11.x)+
+                 (p1.y-p11.y)*(p1.y-p11.y));
+		 
+		 return 4*b+8*a;
 	}
 
 	@Override
@@ -362,16 +371,118 @@ class Plus extends Figure{
 
 	@Override
 	float getX() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (p3.x+p31.x)/2;
 	}
 
 	@Override
 	float getY() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (p1.y+p32.y)/2;
 	}
 	
+}
+
+class Quadrangle extends Figure{
+    Point point1, point2, point3, point4;
+
+    Quadrangle(){
+    	point1 = new Point();
+    	point2 = new Point();
+    	point3 = new Point();
+    	point4 = new Point();
+    	
+    	point4.y = point1.y;
+    	point2.x = point1.x;
+    	point3.x = point4.x;
+    	point3.y = point2.y;
+    }
+
+    Quadrangle(Point p1, Point p2, Point p3, Point p4){
+        point1=p1; point2=p2; point3=p3; point4=p4;
+    }
+
+    @Override
+    public boolean isInside(float px, float py)
+    { if(px>=point1.x && px<=point4.x)
+		if(py>=point1.y && py<=point2.y)
+			return true;
+		return false;
+    }
+
+    @Override
+	String getName() {
+    	return "Quadriangle{"+point1.toStringXY()+
+                point2.toStringXY()+
+                point3.toStringXY()+
+                point4.toStringXY()+"}";
+	}
+
+	@Override
+	float getX() {
+		return (point1.x+point4.x)/2;
+	}
+
+	@Override
+	float getY() {
+		return (point1.y+point2.y)/2;
+	}
+
+	@Override
+	float computeArea(){
+        float a = (float)Math.sqrt( (point1.x-point4.x)*(point1.x-point4.x)+
+                                    (point1.y-point4.y)*(point1.y-point4.y));
+        float b = (float)Math.sqrt( (point1.x-point2.x)*(point1.x-point2.x)+
+                                    (point1.y-point2.y)*(point1.y-point2.y));
+        return a*b;
+    }
+
+	@Override
+    float computePerimeter(){
+		float a = (float)Math.sqrt( (point1.x-point4.x)*(point1.x-point4.x)+
+                (point1.y-point4.y)*(point1.y-point4.y));
+		float b = (float)Math.sqrt( (point1.x-point2.x)*(point1.x-point2.x)+
+                (point1.y-point2.y)*(point1.y-point2.y));
+        return (a+b)*2;
+    }
+
+	@Override
+    void move(float dx, float dy){
+        point1.move(dx,dy);
+        point2.move(dx,dy);
+        point3.move(dx,dy);
+        point4.move(dx,dy);
+    }
+
+	@Override
+    void scale(float s){
+        Point sr1 = new Point((point1.x+point4.x)/2,
+                              (point1.y+point4.y)/2);
+        point1.x*=s; point1.y*=s;
+        point2.x*=s; point2.y*=s;
+        point3.x*=s; point3.y*=s;
+        point4.x*=s; point4.y*=s;
+        Point sr2 = new Point((point1.x+point4.x)/2,
+                			  (point1.y+point4.y)/2);
+        float dx=sr1.x-sr2.x;
+        float dy=sr1.y-sr2.y;
+        point1.move(dx,dy);
+        point2.move(dx,dy);
+        point3.move(dx,dy);
+        point4.move(dx,dy);
+    }
+
+	@Override
+    void draw(Graphics g){
+		setColor(g);
+        g.drawLine((int)point1.x, (int)point1.y,
+                   (int)point2.x, (int)point2.y);
+        g.drawLine((int)point2.x, (int)point2.y,
+                   (int)point3.x, (int)point3.y);
+        g.drawLine((int)point3.x, (int)point3.y,
+                   (int)point4.x, (int)point4.y);
+        g.drawLine((int)point4.x, (int)point4.y,
+                   (int)point1.x, (int)point1.y);
+    }
+
 }
 
 class Triangle extends Figure{
@@ -589,6 +700,9 @@ class Picture extends JPanel implements KeyListener, MouseListener {
 		case 'l' :
 			addFigure(new Plus());
 			break;
+		case 'k' :
+			addFigure(new Quadrangle());
+			break;
 
 		case '+':
 			scaleAllFigures(1.1f);
@@ -651,7 +765,9 @@ public class GraphicEditor extends JFrame implements ActionListener{
 			+ "   p  ==> dodanie nowego punktu\n"
 			+ "   c  ==> dodanie nowego kola\n"
 			+ "   t  ==> dodanie nowego trojkata\n"
-			+ "	  e  ==> dodanie nowej elipsy\n"	
+			+ "	  e  ==> dodanie nowej elipsy\n"
+			+ "   l  ==> dodanie nowego plusa\n"	
+			+ "   k  ==> dodanie nowego czworokata"
 			+ "\nOperacje myszka:\n" + "   klik ==> zaznaczanie figur\n"
 			+ "   ALT + klik ==> zmiana zaznaczenia figur\n"
 			+ "   przeciaganie ==> przesuwanie figur";
@@ -667,6 +783,8 @@ public class GraphicEditor extends JFrame implements ActionListener{
 			                      new JMenuItem("Kolo"),
 			                      new JMenuItem("Trojkat"),
 			                      new JMenuItem("Elipsa"),
+			                      new JMenuItem("Plus"),
+			                      new JMenuItem("Czworokat"),
 			                      new JMenuItem("Wypisz wszystkie"),
 			                      new JMenuItem("Przesun w gore"),
 			                      new JMenuItem("Przesun w dol"),
@@ -680,6 +798,7 @@ public class GraphicEditor extends JFrame implements ActionListener{
 	private JButton buttonTriangle = new JButton("Trojkat");
 	private JButton buttonElipse = new JButton("Elipsa");
 	private JButton buttonPlus = new JButton("Plus");
+	private JButton buttonQuadrangle = new JButton("Czworokat");
 
 
     public GraphicEditor()
@@ -695,17 +814,19 @@ public class GraphicEditor extends JFrame implements ActionListener{
       menu[0].add(items[1]);
       menu[0].add(items[2]);
       menu[0].add(items[3]);
-      menu[0].addSeparator();
       menu[0].add(items[4]);
+      menu[0].add(items[5]);
+      menu[0].addSeparator();
+      menu[0].add(items[6]);
 
       // dodanie opcji do menu "Edytuj"
-      menu[1].add(items[5]);
-      menu[1].add(items[6]);
-      menu[1].addSeparator();
       menu[1].add(items[7]);
       menu[1].add(items[8]);
+      menu[1].addSeparator();
+      menu[1].add(items[9]);
+      menu[1].add(items[10]);
       
-      menu[2].add(items[9]);
+      menu[2].add(items[11]);
 
       // dodanie do okna paska menu
       JMenuBar menubar = new JMenuBar();
@@ -724,12 +845,14 @@ public class GraphicEditor extends JFrame implements ActionListener{
       buttonTriangle.addActionListener(this);
       buttonElipse.addActionListener(this);
       buttonPlus.addActionListener(this);
+      buttonQuadrangle.addActionListener(this);
 
       picture.add(buttonPoint);
       picture.add(buttonCircle);
       picture.add(buttonTriangle);
       picture.add(buttonElipse);
       picture.add(buttonPlus);
+      picture.add(buttonQuadrangle);
 
       setContentPane(picture);
       setVisible(true);
@@ -748,6 +871,8 @@ public class GraphicEditor extends JFrame implements ActionListener{
 			picture.addFigure(new Elipse());
 		if (zrodlo == buttonPlus)
 			picture.addFigure(new Plus());
+		if (zrodlo == buttonQuadrangle)
+			picture.addFigure(new Quadrangle());
 
 		if (zrodlo == items[0])
 			picture.addFigure(new Point());
@@ -758,17 +883,21 @@ public class GraphicEditor extends JFrame implements ActionListener{
 		if (zrodlo == items[3])
 			picture.addFigure(new Elipse());
 		if (zrodlo == items[4])
+			picture.addFigure(new Plus());
+		if (zrodlo == items[5])
+			picture.addFigure(new Quadrangle());
+		if (zrodlo == items[6])
 			JOptionPane.showMessageDialog(null, picture.toString());
 
-		if (zrodlo == items[5])
-			picture.moveAllFigures(0, -10);
-		if (zrodlo == items[6])
-			picture.moveAllFigures(0, 10);
 		if (zrodlo == items[7])
-			picture.scaleAllFigures(1.1f);
+			picture.moveAllFigures(0, -10);
 		if (zrodlo == items[8])
-			picture.scaleAllFigures(0.9f);
+			picture.moveAllFigures(0, 10);
 		if (zrodlo == items[9])
+			picture.scaleAllFigures(1.1f);
+		if (zrodlo == items[10])
+			picture.scaleAllFigures(0.9f);
+		if (zrodlo == items[11])
 			JOptionPane.showMessageDialog(null, DESCRIPTION);
 
 		picture.requestFocus(); // przywrocenie ogniskowania w celu przywrocenia
