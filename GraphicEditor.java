@@ -276,7 +276,7 @@ class Plus extends Figure{
 
 	@Override
 	String getName() {
-		return "Plus(" + p1.toStringXY() + ", " + p2.toStringXY() + ")";
+		return "Plus(" + p1.toStringXY() + ")";
 	}
 
 	@Override
@@ -390,8 +390,13 @@ class Quadrangle extends Figure{
     	point3 = new Point();
     	point4 = new Point();
     	
+    	int width = random.nextInt(380)+20;
+    	int length = random.nextInt(380)+20;
+    	
+    	point4.x = point1.x+width;
     	point4.y = point1.y;
     	point2.x = point1.x;
+    	point2.y = point1.y+length;
     	point3.x = point4.x;
     	point3.y = point2.y;
     }
@@ -588,9 +593,10 @@ class Triangle extends Figure{
 
 
 
-class Picture extends JPanel implements KeyListener, MouseListener {
+class Picture extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
+	private int lastpx, lastpy;
 
 
 	Vector<Figure> figures = new Vector<Figure>();
@@ -731,23 +737,50 @@ class Picture extends JPanel implements KeyListener, MouseListener {
 
    public void mouseEntered(MouseEvent e)
    //Invoked when the mouse enters a component.
-   { }
+   { 
+	  
+   }
 
    public void mouseExited(MouseEvent e)
    //Invoked when the mouse exits a component.
-   { }
+   { 
+	
+   }
 
 
 	public void mousePressed(MouseEvent e)
 	// Invoked when a mouse button has been pressed on a component.
 	{
+		lastpx = e.getX();
+		lastpy = e.getY();
 	}
 
    public void mouseReleased(MouseEvent e)
    //Invoked when a mouse button has been released on a component.
-   { }
+   { 
 
-}
+   }
+
+	public void mouseDragged(MouseEvent e) {
+	// TODO Auto-generated method stub	
+	 for (Figure f : figures)
+	 { 
+	   if(f.isSelected() &&  f.isInside(e.getX(), e.getY()))
+	   {
+			moveAllFigures((e.getX()-lastpx), (e.getY()-lastpy));	
+			lastpx = e.getX();
+			lastpy = e.getY();
+			System.out.println("Mouse:" +e.getX()+" "+e.getY());		
+	   }
+	 }
+	 repaint();
+	}
+
+	public void mouseMoved(MouseEvent e) {
+	// TODO Auto-generated method stub
+	}
+
+	}
 
 
 
@@ -839,6 +872,7 @@ public class GraphicEditor extends JFrame implements ActionListener{
       picture.setFocusable(true);
       picture.addMouseListener(picture);
       picture.setLayout(new FlowLayout());
+      picture.addMouseMotionListener(picture);
 
       buttonPoint.addActionListener(this);
       buttonCircle.addActionListener(this);
