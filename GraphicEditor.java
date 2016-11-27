@@ -276,7 +276,8 @@ class Plus extends Figure{
 
 	@Override
 	String getName() {
-		return "Plus(" + p1.toStringXY() + ")";
+		return "Plus(" + p1.toStringXY() + p2.toStringXY() + p3.toStringXY() + p11.toStringXY() + p21.toStringXY() + p31.toStringXY() +
+				 p12.toStringXY() + p22.toStringXY() + p32.toStringXY() + p13.toStringXY() + p23.toStringXY() + p33.toStringXY() +")";
 	}
 
 	@Override
